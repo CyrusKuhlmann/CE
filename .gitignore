@@ -1,0 +1,25 @@
+# Compiled Object files
+*.o
+*.obj
+
+# Executables
+*.bin
+*.elf
+
+# PROS
+bin/
+.vscode/
+.cache/
+compile_commands.json
+temp.log
+temp.errors
+firmware/
+*.ini
+.d/
+project.pros
+
+#includes
+include/pros/
+include/liblvgl/
+include/Eigen/
+include/api.h
