@@ -3,6 +3,11 @@
 #include "command/runCommand.h"
 #include "command/subsystem.h"
 
+struct DriveVelocities {
+  double linearVelocity = 0.0;
+  double angularVelocity = 0.0;
+};
+
 class Drivetrain : public Subsystem {
  public:
   explicit Drivetrain(const std::initializer_list<std::int8_t> leftPorts,

@@ -1,40 +1,39 @@
 #pragma once
 
 #include "Eigen/Dense"
-#include "reading.h"
+#include "localizer.h"
+#include "odometry.h"
+#include "readings.h"
 #include "robot.h"
-#include "units/units.hpp"
-
-using namespace units;
 
 namespace UKFConfig {
 constexpr double alpha = 1e-3;
 constexpr double beta = 2.0;
 constexpr double kappa = 0.0;
 
-constexpr QLength sigma_proc_x = 0.1_in;
-constexpr QLength sigma_proc_y = 0.1_in;
-constexpr Angle sigma_proc_theta = 0.02_rad;
+constexpr double sigmaX = 0.1;
+constexpr double sigmaY = 0.1;
+constexpr double sigmaTheta = 0.02;
 
-constexpr QLength sigma_dist = 1.0_in;
+constexpr double sigmaMove = 1.0;
 
 constexpr int N = 3;  // state dimension
 
 constexpr double mahal_gate_sigma = 3.0;
 };  // namespace UKFConfig
 
-class UKF {
+class UKF : public ILocalizer {
  public:
   UKF();
-  void predict(QLength delta_fwd, QLength delta_lat, Angle delta_theta);
-  void updateDistance(const DistanceSensorReading& measurement);
-  void updateVision(const VisionSensorReading& measurement);
+  void predict(double delta_fwd, double delta_lat, double delta_theta) override;
+  void updateDistance(const DistanceSensorReading& measurement) override;
+  void updateVision(const VisionSensorReading& measurement) override;
 
-  Eigen::Vector3d getState();
-  void setState(const Eigen::Vector3d& newState);
-  Eigen::Matrix3d getCovariance();
+  Eigen::Vector3d getState() override;
+  void setState(const Eigen::Vector3d& newState) override;
 
  private:
   Eigen::Vector3d state;  // [x, y, theta]
   Eigen::Matrix3d covariance;
+  Odometry odometry;
 };

@@ -87,4 +87,4 @@ void autonomous() { CommandScheduler::schedule(autonomousCommand); }
  * operator control task will be stopped. Re-enabling the robot will restart
  * the task, not resume it from where it left off.
  */
-void opcontrol() { pros::Controller master(pros::E_CONTROLLER_MASTER); }
+void opcontrol() { autonomousCommand->cancel(); }

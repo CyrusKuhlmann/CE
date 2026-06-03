@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Eigen/Dense"
 #include "command/runCommand.h"
 #include "command/subsystem.h"
 #include "config.h"
@@ -28,6 +29,7 @@ class Localization : public Subsystem {
   double getX();
   double getY();
   double getHeading();
+  Eigen::Vector3d getPose();
 
   ~Localization() override = default;
 

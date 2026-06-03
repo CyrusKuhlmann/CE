@@ -18,7 +18,7 @@ firmware/
 .d/
 project.pros
 
-#includes
+# includes
 include/pros/
 include/liblvgl/
 include/Eigen/
