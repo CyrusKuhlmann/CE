@@ -18,8 +18,9 @@ firmware/
 .d/
 project.pros
 
-# includes
+# includes/Libraries
 include/pros/
 include/liblvgl/
 include/Eigen/
 include/api.h
+include/json/
