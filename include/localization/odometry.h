@@ -3,7 +3,6 @@
 #include "Eigen/Dense"
 #include "localizer.h"
 #include "robot.h"
-#include "subsystems/drivetrain.h"
 
 class Odometry : public ILocalizer {
  public:

@@ -37,7 +37,7 @@ Command* autonomousCommand;
 void initialize() {
   pros::Task commandSchedulerTask(update_loop);
 
-  drivetrain = new Drivetrain({1, 2, 3}, {4, 5, 6});
+  drivetrain = new Drivetrain({1, 2, 3}, {4, 5, 6}, 7, 8, 9);
   CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
 
   autonomousCommand = AutonomousCommands::getAuton();

@@ -31,9 +31,7 @@ class MotionProfile1D {
       : constraints(constraints),
         distance(distance),
         startVelocity(startVelocity),
-        endVelocity(endVelocity) {
-    generateProfile();
-  };
+        endVelocity(endVelocity) {};
 
   double getTotalTime() const { return totalTime; }
 
@@ -128,4 +126,21 @@ class MotionProfile1D {
     stableEndTime = accelEndTime + cruiseTime;
     totalTime = stableEndTime + decelTime;
   };
+
+  const double getStartVelocity() const { return startVelocity; }
+  void setStartVelocity(const double startVelocity) {
+    this->startVelocity = startVelocity;
+  }
+  const double getEndVelocity() const { return endVelocity; }
+  void setEndVelocity(const double endVelocity) {
+    this->endVelocity = endVelocity;
+  }
+  const double getDistance() const { return distance; }
+  void setDistance(const double distance) { this->distance = distance; }
+  const MotionProfileConstraints getProfileConstraints() const {
+    return constraints;
+  }
+  void setProfileConstraints(const MotionProfileConstraints constraints) {
+    this->constraints = constraints;
+  }
 };

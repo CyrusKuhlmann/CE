@@ -133,3 +133,8 @@ class PID final : public FeedbackController {
 
   ~PID() override = default;
 };
+
+namespace PIDConstants {
+inline PID turnPID = PID(0.88, 0.0, 7.6);
+inline PID distancePID = PID(0.8, 0.0, 0.0);
+}  // namespace PIDConstants
