@@ -35,10 +35,15 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
-#include "autonomous/autonCommands.h"
-#include "command/commandController.h"
 #include "config.h"
 #include "subsystems/drivetrain.h"
+#include "subsystems/localization.h"
+
+extern Drivetrain* drivetrain;
+extern Localization* localization;
+
+#include "autonomous/autonCommands.h"
+#include "command/commandController.h"
 
 /**
  * You should add more #includes here

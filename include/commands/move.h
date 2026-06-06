@@ -6,10 +6,12 @@
 #include "motionProfiling/MotionProfile1D.h"
 #include "robot.h"
 #include "subsystems/Drivetrain.h"
+#include "subsystems/localization.h"
 
 class Move : public Command {
  private:
   Drivetrain* drivetrain;
+  Localization* localization;
   MotionProfile1D profile;
 
   double startTime = 0.0;
@@ -26,11 +28,12 @@ class Move : public Command {
   PID distancePID;
 
  public:
-  Move(Drivetrain* drivetrain, double distance, double curvature,
-       const MotionProfileConstraints& constraints, double targetAngle,
-       bool useTurnPID = true, const double initialVelocity = 0.0,
-       const double finalVelocity = 0.0)
+  Move(Drivetrain* drivetrain, Localization* localization, double distance,
+       double curvature, const MotionProfileConstraints& constraints,
+       double targetAngle, bool useTurnPID = true,
+       const double initialVelocity = 0.0, const double finalVelocity = 0.0)
       : drivetrain(drivetrain),
+        localization(localization),
         profile(distance, initialVelocity, finalVelocity, constraints),
         distance(distance),
         curvature(curvature),
@@ -50,7 +53,7 @@ class Move : public Command {
 
   void initialize() override {
     startTime = pros::millis();
-    startDistance = drivetrain->getPosition();
+    startDistance = localization->getPosition();
     double adjustedVelocity = this->getVelocityMultiplier() *
                               this->profile.getProfileConstraints().maxVelocity;
 
@@ -73,7 +76,7 @@ class Move : public Command {
     const double acceleration = profile.getAccelerationAtTime(duration);
     const double velocity = profile.getVelocityAtTime(duration);
     const double targetDistance = profile.getDistanceAtTime(duration);
-    const double currentDistance = drivetrain->getPosition() - startDistance;
+    const double currentDistance = localization->getPosition() - startDistance;
 
     distancePID.setTarget(targetDistance);
 
@@ -97,7 +100,7 @@ class Move : public Command {
       double angleWithOffset = targetAngle + offset;
       turnPID.setTarget(angleWithOffset);
 
-      const double turnVoltage = turnPID.update(drivetrain->getTheta());
+      const double turnVoltage = turnPID.update(localization->getTheta());
 
       leftVoltage -= turnVoltage + angularFF;
       rightVoltage += turnVoltage + angularFF;

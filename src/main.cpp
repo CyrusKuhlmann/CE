@@ -3,6 +3,7 @@
 CommandController primary(pros::E_CONTROLLER_MASTER);
 
 Drivetrain* drivetrain;
+Localization* localization;
 Command* autonomousCommand;
 
 /**
@@ -37,8 +38,12 @@ Command* autonomousCommand;
 void initialize() {
   pros::Task commandSchedulerTask(update_loop);
 
-  drivetrain = new Drivetrain({1, 2, 3}, {4, 5, 6}, 7, 8, 9);
+  drivetrain = new Drivetrain({1, 2, 3}, {4, 5, 6});
   CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
+
+  localization = new Localization(9, 8, 7, 10, 11, 12, 13, 14);
+  CommandScheduler::registerSubsystem(localization,
+                                      new RunCommand([] {}, {localization}));
 
   autonomousCommand = AutonomousCommands::getAuton();
 }
