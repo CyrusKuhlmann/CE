@@ -14,10 +14,10 @@ class Ramsete : public Command {
   float zeta;
   float beta;
 
-  QTime startTime;
+  double startTime;
 
-  QVelocity lastLeft = 0.0;
-  QVelocity lastRight = 0.0;
+  double lastLeft = 0.0;
+  double lastRight = 0.0;
 
   DriveVelocities lastVelocities{0.0, 0.0};
 };
