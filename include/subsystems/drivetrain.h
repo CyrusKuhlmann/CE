@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cmath>
+#include <cstdint>
+#include <vector>
 
 #include "command/runCommand.h"
 #include "command/subsystem.h"
@@ -14,8 +16,8 @@ struct DriveVelocities {
 
 class Drivetrain : public Subsystem {
  public:
-  explicit Drivetrain(const std::initializer_list<std::int8_t> leftPorts,
-                      const std::initializer_list<std::int8_t> rightPorts)
+  explicit Drivetrain(const std::vector<std::int8_t>& leftPorts,
+                      const std::vector<std::int8_t>& rightPorts)
       : leftMotors(leftPorts), rightMotors(rightPorts) {}
 
   void periodic() override {}
@@ -40,9 +42,35 @@ class Drivetrain : public Subsystem {
         {this});
   }
 
+  double getForwardEncoderInches() const {
+    double sumDeg = 0.0;
+    int count = 0;
+    for (const double deg : leftMotors.get_position_all()) {
+      if (std::isfinite(deg)) {
+        sumDeg += deg;
+        ++count;
+      }
+    }
+    for (const double deg : rightMotors.get_position_all()) {
+      if (std::isfinite(deg)) {
+        sumDeg += deg;
+        ++count;
+      }
+    }
+    if (count == 0) return lastForwardInches;
+
+    const double avgDeg = sumDeg / count;
+    lastForwardInches =
+        (avgDeg / 360.0) *
+        (M_PI * Robot::WHEEL_DIAMETER * Robot::DRIVE_GEAR_RATIO) *
+        Robot::FORWARD_ENCODER_SCALE;
+    return lastForwardInches;
+  }
+
   ~Drivetrain() override = default;
 
  private:
   pros::MotorGroup leftMotors;
   pros::MotorGroup rightMotors;
+  mutable double lastForwardInches = 0.0;
 };

@@ -9,7 +9,7 @@ namespace Cyrus {
 
 static Command* Skills() {
   return new Sequence({
-      new Move(drivetrain, localization, 36.0, 0.0, {100.0, 50.0}, 0.0, true,
+      new Move(drivetrain, localization, 20.0, 0.05, {100.0, 50.0}, 0.0, true,
                0.0, 0.0),
   });
 }

@@ -1,11 +1,11 @@
 ﻿#pragma once
 
 /*
- * UKF - stub localizer.
+ * PF - stub localizer.
  *
- * The Square-Root UKF implementation has been removed. This class satisfies
- * the ILocalizer interface using the same arc-integration odometry model as
- * Odometry so the Localization subsystem compiles and runs unchanged.
+ * The Monte-Carlo Particle Filter implementation has been removed. This class
+ * satisfies the ILocalizer interface using the same arc-integration odometry
+ * model as Odometry so the Localization subsystem compiles and runs unchanged.
  * updateDistance() and updateVision() are intentional no-ops.
  */
 
@@ -15,9 +15,9 @@
 #include "localizer.h"
 #include "robot.h"
 
-class UKF : public ILocalizer {
+class PF : public ILocalizer {
  public:
-  UKF() = default;
+  PF() = default;
 
   void predict(double deltaFwd, double deltaLat, double deltaTheta) override {
     const double dFwd = deltaFwd + Robot::fwd_wheel_right_offset * deltaTheta;
@@ -51,9 +51,6 @@ class UKF : public ILocalizer {
     state_ = newState;
     odomTheta_ = newState(2);
   }
-
-  // Kept for API compatibility - returns identity (no covariance tracked).
-  Eigen::Matrix3d getCovariance() const { return Eigen::Matrix3d::Identity(); }
 
  private:
   Eigen::Vector3d state_ = Eigen::Vector3d::Zero();

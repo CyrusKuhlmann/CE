@@ -53,8 +53,8 @@ class Feedforward {
 };
 
 namespace FeedforwardConstants {
-inline Eigen::RowVector2d DEFAULT_LINEAR{0.550, 0.00275};
-inline Eigen::RowVector2d DEFAULT_ANGULAR{0.0895, 0.0170};
+inline Eigen::RowVector2d DEFAULT_LINEAR{2.1, 0.04};
+inline Eigen::RowVector2d DEFAULT_ANGULAR{0.31, 0.0297};
 
 inline Feedforward defaultFeedforward =
     Feedforward(DEFAULT_LINEAR, DEFAULT_ANGULAR);

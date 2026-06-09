@@ -68,10 +68,14 @@ class Move : public Command {
     turnPID.setTurnPid(true);
 
     turnPID.reset();
+
+    distancePID = PIDConstants::distancePID;
+    distancePID.setTurnPid(false);
+    distancePID.reset();
   }
 
   void execute() override {
-    const double duration = pros::millis() - startTime;
+    const double duration = (pros::millis() - startTime) / 1000.0;
 
     const double acceleration = profile.getAccelerationAtTime(duration);
     const double velocity = profile.getVelocityAtTime(duration);
@@ -82,7 +86,7 @@ class Move : public Command {
 
     const auto [linearFF, angularFF] =
         FeedforwardConstants::defaultFeedforward.calculate(
-            velocity, curvature * velocity, acceleration,
+            velocity, acceleration, curvature * velocity,
             curvature * acceleration);
 
     const double wheelVoltage = distancePID.update(currentDistance) + linearFF;
@@ -106,7 +110,7 @@ class Move : public Command {
       rightVoltage += turnVoltage + angularFF;
     }
 
-    drivetrain->setPct(leftVoltage / 120.0, rightVoltage / 120.0);
+    drivetrain->setPct(leftVoltage, rightVoltage);
   }
 
   void end(bool interrupted) override {}
@@ -114,4 +118,6 @@ class Move : public Command {
   bool isFinished() override {
     return (pros::millis() - startTime) >= profile.getTotalTime() * 1000.0;
   };
+
+  std::vector<Subsystem*> getRequirements() override { return {drivetrain}; }
 };

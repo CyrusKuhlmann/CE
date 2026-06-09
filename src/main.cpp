@@ -6,6 +6,18 @@ Drivetrain* drivetrain;
 Localization* localization;
 Command* autonomousCommand;
 
+[[noreturn]] void screen_update_loop() {
+  while (true) {
+    auto start_time = pros::millis();
+    pros::lcd::print(1, "Forward: %.2f", drivetrain->getForwardEncoderInches());
+    // x, y, theta
+    pros::lcd::print(2, "X: %.2f Y: %.2f T: %.2f", localization->getX(),
+                     localization->getY(), localization->getTheta());
+
+    pros::c::task_delay_until(&start_time, 10);
+  }
+}
+
 /**
  * @brief This function runs the update scheduler at each frame with a
  * consistent schedule
@@ -36,16 +48,32 @@ Command* autonomousCommand;
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  pros::Task commandSchedulerTask(update_loop);
+  pros::lcd::initialize();
 
-  drivetrain = new Drivetrain({1, 2, 3}, {4, 5, 6});
+  drivetrain = new Drivetrain(Ports::DRIVE_LEFT, Ports::DRIVE_RIGHT);
   CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
 
-  localization = new Localization(9, 8, 7, 10, 11, 12, 13, 14);
+  localization =
+      new Localization(Ports::IMU, Ports::LATERAL_ROT, Ports::FORWARD_ROT,
+                       Ports::DIST_FRONT, Ports::DIST_BACK, Ports::DIST_LEFT,
+                       Ports::DIST_RIGHT, Ports::VISION, drivetrain);
+
   CommandScheduler::registerSubsystem(localization,
                                       new RunCommand([] {}, {localization}));
 
   autonomousCommand = AutonomousCommands::getAuton();
+
+  pros::Task commandSchedulerTask(update_loop);
+  localization->getLateralRot().reset_position();
+  localization->getForwardRot().reset_position();
+  localization->getIMU().reset(true);
+  pros::delay(500);
+
+  // The screen task copies Eigen Vector3d poses by value and does multiple
+  // %f LVGL prints per frame; the default 8KB stack overflows (manifesting as
+  // nan readings and a crashed task), so give it double the default depth.
+  pros::Task screenUpdateTask(screen_update_loop, TASK_PRIORITY_DEFAULT,
+                              TASK_STACK_DEPTH_DEFAULT * 10, "Screen Update");
 }
 
 /**
